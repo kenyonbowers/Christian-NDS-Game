@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "graphics.h"
-#include "object_structures.h"
+#include "objects.h"
 #include "input.h"
 
 // #include <maxmod9.h>
