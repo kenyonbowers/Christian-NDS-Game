@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <nds.h>
 
-#ifndef STRUCTURES_H_
-#define STRUCTURES_H_
+#ifndef OBJECT_STRUCTURES_H_
+#define OBJECT_STRUCTURES_H_
 
 typedef struct
 {

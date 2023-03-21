@@ -1,13 +1,13 @@
 #include <nds.h>
 #include <stdio.h>
 
-#include "gfxEvents.h"
+#include "graphics.h"
+#include "object_structures.h"
+#include "input.h"
 
-//#include <maxmod9.h>
-//#include "soundbank.h"
-//#include "soundbank_bin.h"
-
-#include "structures.h"
+// #include <maxmod9.h>
+// #include "soundbank.h"
+// #include "soundbank_bin.h"
 
 // Include Art
 SpriteEntry OAMCopy[128];
@@ -18,11 +18,26 @@ Sprite Player;
 Sprite PlayerHat;
 BoundingBox PlayerBounds;
 
+// Global Vars
+int PlayerSpeed = 2;
+int GravityForce = 1;
+bool OnGround = false;
+
 int playerHealth = 10;
 int enemyHealth = 1;
 
+void updateHat(Sprite *hat, Sprite player)
+{
+    hat->x_pos = player.x_pos;
+    hat->y_pos = player.y_pos - 7;
+    animateSprite(hat, 1);
+    setSprite(hat, &oamMain);
+}
+
 int main()
 {
+    Input input;
+
     Player.size.height = 32;
     Player.size.width = 16;
     Player.size.text = SpriteSize_16x32;
@@ -56,11 +71,31 @@ int main()
     dmaCopy(PlayerHatPal, &VRAM_F_EXT_SPR_PALETTE[1][0], PlayerHatPalLen);
     vramSetBankF(VRAM_F_SPRITE_EXT_PALETTE);
 
-    while(1){
-        animateSprite(&Player, 2);
+    while (1)
+    {
+        swiWaitForVBlank();
+
+        scanKeys();
+        input = getInput();
+
+        if(input.held & KEY_LEFT){
+			if(Player.x_pos > 0){
+                Player.x_pos -= PlayerSpeed;
+            }
+		}
+        else if (input.held & KEY_RIGHT){
+            if (Player.x_pos < 256 - 16){
+                Player.x_pos += PlayerSpeed;
+            }
+        }
+
+        if(!OnGround){
+            Player.y_pos += GravityForce;
+        }
+
+        updateHat(&PlayerHat, Player);
+        animateSprite(&Player, 0);
         setSprite(&Player, &oamMain);
-        animateSprite(&PlayerHat, 1);
-        setSprite(&PlayerHat, &oamMain);
         oamUpdate(&oamMain);
     }
 

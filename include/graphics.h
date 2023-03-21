@@ -1,10 +1,9 @@
 #include <nds.h>
 #include <stdio.h>
-#include <cstdint>
-#include "structures.h"
+#include "object_structures.h"
 
-#ifndef GFXEVENTS_H_
-#define GFXEVENTS_H_
+#ifndef GRAPHICS_EVENTS_H_
+#define GRAPHICS_EVENTS_H_
 
 void animateSprite(Sprite *sprite, int framesPerAnimation)
 {
