@@ -13,6 +13,7 @@ typedef struct
 } Input;
 
 Input getInput(){
+    scanKeys();
     Input pad;
     touchRead(&pad.touch);
     pad.pressed = keysDown();

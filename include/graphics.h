@@ -1,6 +1,6 @@
 #include <nds.h>
 #include <stdio.h>
-#include "object_structures.h"
+#include "objects.h"
 
 #ifndef GRAPHICS_EVENTS_H_
 #define GRAPHICS_EVENTS_H_

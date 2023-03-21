@@ -75,7 +75,6 @@ int main()
     {
         swiWaitForVBlank();
 
-        scanKeys();
         input = getInput();
 
         if(input.held & KEY_LEFT){
