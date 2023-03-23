@@ -5,6 +5,8 @@
 #include "objects.h"
 #include "input.h"
 
+#include <ChurchInside.h>
+
 // #include <maxmod9.h>
 // #include "soundbank.h"
 // #include "soundbank_bin.h"
@@ -20,8 +22,19 @@ BoundingBox PlayerBounds;
 
 // Global Vars
 int PlayerSpeed = 2;
-int GravityForce = 1;
-bool OnGround = false;
+int GravityForce = 2;
+int JumpForce = 1;
+enum JumpStates {
+    falling = 0,
+    jumping = 1,
+    grounded = 2,
+    stationary = 3
+};
+enum JumpStates JumpState;
+int JumpFrames = 20;
+int JumpFramesCounter = 0;
+int StationaryFrames = 20;
+int StationaryFramesCounter = 0;
 
 int playerHealth = 10;
 int enemyHealth = 1;
@@ -36,7 +49,7 @@ void updateHat(Sprite *hat, Sprite player)
 
 int main()
 {
-    Input input;
+    Input pad;
 
     Player.size.height = 32;
     Player.size.width = 16;
@@ -71,25 +84,48 @@ int main()
     dmaCopy(PlayerHatPal, &VRAM_F_EXT_SPR_PALETTE[1][0], PlayerHatPalLen);
     vramSetBankF(VRAM_F_SPRITE_EXT_PALETTE);
 
+    loadBg(ChurchInsideBitmap, ChurchInsidePal, 3);
+
     while (1)
     {
         swiWaitForVBlank();
 
-        input = getInput();
+        pad = getInput();
 
-        if(input.held & KEY_LEFT){
-			if(Player.x_pos > 0){
+        if(pad.held & KEY_LEFT){
+			if(Player.x_pos > 0)
                 Player.x_pos -= PlayerSpeed;
-            }
 		}
-        else if (input.held & KEY_RIGHT){
-            if (Player.x_pos < 256 - 16){
+        else if (pad.held & KEY_RIGHT){
+            if (Player.x_pos < 256 - 16)
                 Player.x_pos += PlayerSpeed;
-            }
         }
 
-        if(!OnGround){
+        if(JumpState == falling){
             Player.y_pos += GravityForce;
+            if(Player.y_pos + Player.size.height >= 191){
+                Player.y_pos = 191 - Player.size.height;
+                JumpState = grounded;
+            }
+        }
+        else if(JumpState == jumping){
+            Player.y_pos -= JumpForce;
+            JumpFramesCounter++;
+            if(JumpFramesCounter >= JumpFrames){
+                JumpFramesCounter = 0;
+                JumpState = stationary;
+            }
+        }
+        else if(JumpState == grounded){
+            if(pad.pressed & KEY_A)
+                JumpState = jumping;
+        }
+        else if(JumpState == stationary){
+            StationaryFramesCounter++;
+            if(StationaryFramesCounter >= StationaryFrames){
+                StationaryFramesCounter = 0;
+                JumpState = falling;
+            }
         }
 
         updateHat(&PlayerHat, Player);
