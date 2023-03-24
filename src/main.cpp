@@ -6,6 +6,7 @@
 #include "input.h"
 
 #include <ChurchInside.h>
+#include <Store.h>
 
 // #include <maxmod9.h>
 // #include "soundbank.h"
@@ -21,19 +22,20 @@ Sprite PlayerHat;
 BoundingBox PlayerBounds;
 
 // Global Vars
-int PlayerSpeed = 2;
-int GravityForce = 2;
-int JumpForce = 1;
-enum JumpStates {
+int PlayerSpeed = 1;
+int GravityForce = 1;
+int JumpForce = 1.5;
+enum JumpStates
+{
     falling = 0,
     jumping = 1,
     grounded = 2,
     stationary = 3
 };
 enum JumpStates JumpState;
-int JumpFrames = 20;
+int JumpFrames = 25;
 int JumpFramesCounter = 0;
-int StationaryFrames = 20;
+int StationaryFrames = 2;
 int StationaryFramesCounter = 0;
 
 int playerHealth = 10;
@@ -64,16 +66,17 @@ int main()
     PlayerHat.x_pos = 1;
 
     // Set OAM video modes.
+    consoleDemoInit();
     videoSetMode(MODE_5_2D);
-    videoSetModeSub(MODE_0_2D);
+    // videoSetModeSub(MODE_0_2D);
 
     // Setting the banks. Does not include the F bank
     vramSetBankA(VRAM_A_MAIN_BG_0x06000000);
-    vramSetBankD(VRAM_D_SUB_SPRITE);
+    // vramSetBankD(VRAM_D_SUB_SPRITE);
 
     // Set up oam
     oamInit(&oamMain, SpriteMapping_1D_128, true);
-    oamInit(&oamSub, SpriteMapping_1D_128, false);
+    // oamInit(&oamSub, SpriteMapping_1D_128, false);
 
     // Set bank F
     vramSetBankF(VRAM_F_LCD);
@@ -84,7 +87,8 @@ int main()
     dmaCopy(PlayerHatPal, &VRAM_F_EXT_SPR_PALETTE[1][0], PlayerHatPalLen);
     vramSetBankF(VRAM_F_SPRITE_EXT_PALETTE);
 
-    loadBg(ChurchInsideBitmap, ChurchInsidePal, 3);
+    int mainBg = loadBg(ChurchInsideBitmap, ChurchInsidePal, 3);
+    mainBg = loadBg(StoreBitmap, StorePal, 3);
 
     while (1)
     {
@@ -92,37 +96,46 @@ int main()
 
         pad = getInput();
 
-        if(pad.held & KEY_LEFT){
-			if(Player.x_pos > 0)
+        if (pad.held & KEY_LEFT)
+        {
+            if (Player.x_pos > 0)
                 Player.x_pos -= PlayerSpeed;
-		}
-        else if (pad.held & KEY_RIGHT){
+        }
+        else if (pad.held & KEY_RIGHT)
+        {
             if (Player.x_pos < 256 - 16)
                 Player.x_pos += PlayerSpeed;
         }
 
-        if(JumpState == falling){
+        if (JumpState == falling)
+        {
             Player.y_pos += GravityForce;
-            if(Player.y_pos + Player.size.height >= 191){
+            if (Player.y_pos + Player.size.height >= 191)
+            {
                 Player.y_pos = 191 - Player.size.height;
                 JumpState = grounded;
             }
         }
-        else if(JumpState == jumping){
+        else if (JumpState == jumping)
+        {
             Player.y_pos -= JumpForce;
             JumpFramesCounter++;
-            if(JumpFramesCounter >= JumpFrames){
+            if (JumpFramesCounter >= JumpFrames)
+            {
                 JumpFramesCounter = 0;
                 JumpState = stationary;
             }
         }
-        else if(JumpState == grounded){
-            if(pad.pressed & KEY_A)
+        else if (JumpState == grounded)
+        {
+            if (pad.pressed & KEY_A)
                 JumpState = jumping;
         }
-        else if(JumpState == stationary){
+        else if (JumpState == stationary)
+        {
             StationaryFramesCounter++;
-            if(StationaryFramesCounter >= StationaryFrames){
+            if (StationaryFramesCounter >= StationaryFrames)
+            {
                 StationaryFramesCounter = 0;
                 JumpState = falling;
             }
@@ -136,3 +149,9 @@ int main()
 
     return 0;
 }
+
+/*
+#include <nds.h>
+
+
+*/
