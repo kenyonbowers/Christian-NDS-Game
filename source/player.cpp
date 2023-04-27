@@ -25,17 +25,85 @@ int Player::getLives()
 	return lives;
 }
 
-Weapon Player::getWeapon()
+void Player::setX(int value)
 {
-	return weapon;
+	x = value;
 }
 
-bool Player::move(int direction)
+void Player::setY(int value)
 {
-	return true;
+	y = value;
 }
 
 int Player::getIndex()
 {
 	return index;
+}
+
+int Player::getJumpState(){
+	return jumpState;
+}
+
+void Player::setJumpState(int value){
+	jumpState = value;
+}
+
+int Player::getAmmo(){
+	return ammo;
+}
+
+void Player::setAmmo(int value){
+	ammo = value;
+}
+
+int Player::getReloadTime(){
+	return reloadTime;
+}
+
+int Player::getMeleeDelay(){
+	return meleeDelay;
+}
+
+int Player::getWeaponX(){
+	if(direction) {
+		//Right
+		return x - 8;
+	}
+	else{
+		//Left
+		return x + 17;
+	}
+	return 0;
+}
+
+int Player::getWeaponY(){
+	return y + 4;
+}
+
+bool Player::getDirection(){
+	return direction;
+}
+
+void Player::setDirection(bool dir){
+	direction = dir;
+}
+
+int Player::getJumpFrames(){
+	return jumpFrames;
+}
+
+int Player::getTimeInAir(){
+	return inAirFrames;
+}
+
+int Player::getFallSpeed(){
+	return fallSpeed;
+}
+
+void Player::setHealth(int value){
+	health = value;
+}
+
+void Player::setLives(int value){
+	lives = value;
 }

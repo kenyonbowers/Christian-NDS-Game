@@ -5,10 +5,14 @@ class Weapon
 {
   private:
 	int type;
+	int attack;
 	
   public:
-	Weapon();
+	Weapon(int attackAmount);
 	int getType();
+	void setType(int value);
+	int getAttack();
+	void setAttack(int value);
 };
 
 #endif
