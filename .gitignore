@@ -32,5 +32,4 @@
 
 /build
 *.elf
-/nflib/source
-/nflib/Makefile
+/nflib
