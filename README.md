@@ -11,5 +11,5 @@ Christian-NDS-Game [root]
 └── nflib
     ├── include [contains all the nflib ".h" files]
     └── lib
-		└── libnflib.a
+	    └── libnflib.a
 ```
